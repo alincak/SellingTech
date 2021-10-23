@@ -3,9 +3,46 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EBF3E6C2-C40E-4C57-A49B-35E98E596BF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1CA14F72-E1FA-4FDB-81D8-317BFC72AA9A}"
+	ProjectSection(SolutionItems) = preProject
+		ServiceUrls.txt = ServiceUrls.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{A15C8955-5CB9-408F-B38A-3EFB24A70A40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{C9BB5D2F-C138-42C2-A4CD-84ACA3D11D79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{0570D6FD-190F-4591-A31A-E0D56CF2B356}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{2F8CAD7C-77DC-42F2-8B82-AFFF956DF184}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebApiGateways", "WebApiGateways", "{849124B5-8465-4D38-8781-51BADAB55172}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.ApiGateway", "src\ApiGateways\WebApiGateway\Web.ApiGateway\Web.ApiGateway.csproj", "{06553E7D-D526-4EC3-B729-7D4E99F22D45}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06553E7D-D526-4EC3-B729-7D4E99F22D45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06553E7D-D526-4EC3-B729-7D4E99F22D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06553E7D-D526-4EC3-B729-7D4E99F22D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06553E7D-D526-4EC3-B729-7D4E99F22D45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A15C8955-5CB9-408F-B38A-3EFB24A70A40} = {EBF3E6C2-C40E-4C57-A49B-35E98E596BF5}
+		{C9BB5D2F-C138-42C2-A4CD-84ACA3D11D79} = {EBF3E6C2-C40E-4C57-A49B-35E98E596BF5}
+		{0570D6FD-190F-4591-A31A-E0D56CF2B356} = {EBF3E6C2-C40E-4C57-A49B-35E98E596BF5}
+		{2F8CAD7C-77DC-42F2-8B82-AFFF956DF184} = {EBF3E6C2-C40E-4C57-A49B-35E98E596BF5}
+		{849124B5-8465-4D38-8781-51BADAB55172} = {A15C8955-5CB9-408F-B38A-3EFB24A70A40}
+		{06553E7D-D526-4EC3-B729-7D4E99F22D45} = {849124B5-8465-4D38-8781-51BADAB55172}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04A1D029-D701-46A1-8669-B4FC227737E8}
