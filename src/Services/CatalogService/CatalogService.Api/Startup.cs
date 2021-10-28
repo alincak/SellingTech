@@ -1,16 +1,12 @@
+using CatalogService.Api.Extensions;
+using CatalogService.Api.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CatalogService.Api
 {
@@ -32,6 +28,9 @@ namespace CatalogService.Api
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "CatalogService.Api", Version = "v1" });
       });
+
+      services.Configure<CatalogSettings>(Configuration.GetSection("CatalogSettings"));
+      services.ConfigureDbContext(Configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +44,12 @@ namespace CatalogService.Api
       }
 
       app.UseHttpsRedirection();
+
+      app.UseStaticFiles(new StaticFileOptions()
+      {
+        FileProvider = new PhysicalFileProvider(System.IO.Path.Combine(env.ContentRootPath, "Pics")),
+        RequestPath = "/pics"
+      });
 
       app.UseRouting();
 
