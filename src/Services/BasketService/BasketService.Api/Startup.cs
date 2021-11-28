@@ -1,24 +1,31 @@
+using BasketService.Api.Core.Application.Repository;
+using BasketService.Api.Core.Application.Services;
+using BasketService.Api.Extensions;
+using BasketService.Api.Infrastructure.Repository;
+using BasketService.Api.IntegrationEvents.EventHandlers;
+using BasketService.Api.IntegrationEvents.Events;
+using EventBus.Base;
+using EventBus.Base.Abstraction;
+using EventBus.Factory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BasketService.Api
 {
   public class Startup
   {
-    public Startup(IConfiguration configuration)
+    private readonly ILogger<Startup> logger;
+
+    public Startup(IConfiguration configuration, ILogger<Startup> logger)
     {
       Configuration = configuration;
+      this.logger = logger;
     }
 
     public IConfiguration Configuration { get; }
@@ -26,6 +33,7 @@ namespace BasketService.Api
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      ConfigureServicesExt(services);
 
       services.AddControllers();
       services.AddSwaggerGen(c =>
@@ -35,8 +43,10 @@ namespace BasketService.Api
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
     {
+      logger.LogInformation("System up and running - From Configure {TestParam}", "Kerem");
+
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
@@ -44,16 +54,56 @@ namespace BasketService.Api
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BasketService.Api v1"));
       }
 
-      app.UseHttpsRedirection();
-
+      //app.UseHttpsRedirection();
+      
       app.UseRouting();
-
+      app.UseAuthentication();
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
       });
+
+      app.RegisterWithConsul(lifetime);
+
+      ConfigureSubscription(app.ApplicationServices);
     }
+
+    private void ConfigureServicesExt(IServiceCollection services)
+    {
+      services.ConfigureAuth(Configuration);
+      services.AddSingleton(sp => sp.ConfigureRedis(Configuration));
+
+      services.ConfigureConsul(Configuration);
+
+      services.AddHttpContextAccessor();
+
+      services.AddTransient<IBasketRepository, RedisBasketRepository>();
+      services.AddTransient<IIdentityService, IdentityService>();
+
+      services.AddSingleton<IEventBus>(sp =>
+      {
+        EventBusConfig config = new()
+        {
+          ConnectionRetryCount = 5,
+          EventNameSuffix = "IntegrationEvent",
+          SubscriberClientAppName = "BasketService",
+          EventBusType = EventBusType.RabbitMQ
+        };
+
+        return EventBusFactory.Create(config, sp);
+      });
+
+      services.AddTransient<OrderCreatedIntegrationEventHandler>();
+    }
+
+    private void ConfigureSubscription(IServiceProvider serviceProvider)
+    {
+      var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+
+      eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+    }
+
   }
 }

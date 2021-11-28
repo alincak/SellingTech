@@ -20,7 +20,7 @@ namespace IdentityService.Api.Application.Services
                 new Claim(ClaimTypes.Name, "Kerem"),
       };
 
-      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TechBuddySecretKeyShouldBeLong"));
+      var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SellingTechSecretKeyShouldBeLong"));
       var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
       var expiry = DateTime.Now.AddDays(10);
 
